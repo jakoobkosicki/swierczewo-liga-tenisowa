@@ -21,42 +21,71 @@ app.innerHTML=`${header()}<main class="shell"><section class="hero"><span class=
 document.querySelector('#logout').onclick=async()=>{await db.auth.signOut();session=null;admin=false;notice='';render();};document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;notice='';render();});document.querySelector('#round')?.addEventListener('change',e=>{round=Number(e.target.value);render();});document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editMatch(b.dataset.edit));}
 async function authenticate(e){e.preventDefault();const fd=new FormData(e.target),email=String(fd.get('email')).trim(),password=String(fd.get('password')||'');const res=authMode==='login'?await db.auth.signInWithPassword({email,password}):await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin});notice=res.error?res.error.message:(authMode==='reset'?'Sprawdź pocztę i otwórz link do ustawienia hasła.':'Zalogowano.');if(!res.error&&authMode==='login')await load();else render();}
 async function load(){const s=await db.auth.getSession();session=s.data.session;if(!session){render();return;}loading=true;const [p,m,a]=await Promise.all([db.from('players').select('id,name').order('id'),db.from('matches').select('id,round,player_a,player_b,s1,s2,st'),db.rpc('is_league_admin')]);players=p.data||[];matches=m.data||[];admin=!a.error&&a.data===true;notice=p.error||m.error?`Nie udało się pobrać danych: ${p.error?.message||m.error?.message}`:'';loading=false;render();}
-function editMatch(id){const m=matches.find(x=>String(x.id)===String(id));if(!m)return;const modal=document.querySelector('#modal');modal.innerHTML=`<div class="overlay"><form class="dialog" id="result-form"><h2>Wynik meczu</h2><p>${esc(byId(m.player_a))} — ${esc(byId(m.player_b))}</p><p class="hint">Zapisuj wynik z perspektywy gospodyni, np. 6-4. Przy remisie 1:1 podaj super tie-break, np. 10-8.</p>${[['s1','Set 1'],['s2','Set 2'],['st','Super tie-break (opcjonalnie)']].map(([field,label])=>`<label>${label}<input name="${field}" value="${esc(m[field]||'')}" placeholder="6-4" /></label>`).join('')}<p id="form-error" class="error"></p><div class="actions"><button type="button" class="outline" id="cancel">Anuluj</button><button type="submit">Zapisz wynik</button></div></form></div>`;document.querySelector('#cancel').onclick=()=>modal.innerHTML='';document.querySelector('#result-form').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),data=Object.fromEntries(['s1','s2','st'].map(k=>[k,String(f.get(k)||'').trim()||null]));if(Object.values(data).some(v=>v&&!parseSet(v))){document.querySelector('#form-error').textContent='Wpisz wyniki w formacie 6-4 lub 10-8.';return;}if(Object.values(data).some(Boolean)&&!result({...m,...data})){document.querySelector('#form-error').textContent='Podaj dwa rozstrzygnięte sety oraz super tie-break tylko przy wyniku 1:1. Aby usunąć wynik, wyczyść wszystkie pola.';return;}const {error}=await db.from('matches').update(data).eq('id',m.id);if(error){document.querySelector('#form-error').textContent=error.message;return;}modal.innerHTML='';notice='Wynik został zapisany.';await load();};}
-async function setup(){const {data:{session:s}}=await db.auth.getSession();session=s;db.auth.onAuthStateChange((event,newSession)=>{if(event==='PASSWORD_RECOVERY'){session=newSession;setTimeout(()=>showPasswordForm(),0);}else if(event==='SIGNED_IN'&&newSession&&!session){session=newSession;setTimeout(()=>load(),0);}else if(event==='SIGNED_OUT'){session=null;setTimeout(()=>render(),0);}});if(session)await load();else render();}
-function showPasswordForm(){app.innerHTML=`<main class="auth-wrap"><form class="auth-card" id="password-form"><h1>Ustaw hasło</h1><p>Ustaw hasło do konta Ligi Tenisowej.</p><label>Nowe hasło<input name="password" type="password" minlength="8" required autocomplete="new-password"></label><button type="submit">Zapisz hasło</button><p class="message" id="password-message"></p></form></main>`;document.querySelector('#password-form').onsubmit=async e=>{e.preventDefault();const password=new FormData(e.target).get('password');const {error}=await db.auth.updateUser({password});if(error){document.querySelector('#password-message').textContent=error.message;return;}history.replaceState({},'',location.pathname);notice='Hasło ustawione.';await load();};}
-setup();
+function editMatch(id) {
+  const m = matches.find(x => String(x.id) === String(id));
+  if (!m) return;
 
-
-const originalEditMatch = editMatch;
-
-editMatch = function(id) {
-  originalEditMatch(id);
+  const modal = document.querySelector('#modal');
+  modal.innerHTML = `<div class="overlay"><form class="dialog" id="result-form">
+    <h2>Wynik meczu</h2>
+    <p>${esc(byId(m.player_a))} — ${esc(byId(m.player_b))}</p>
+    <p class="hint">Zapisuj wynik z perspektywy gospodyni, np. 6:4. Przy remisie 1:1 podaj super tie-break, np. 10:8. Możesz również użyć myślnika.</p>
+    ${[['s1', 'Set 1'], ['s2', 'Set 2'], ['st', 'Super tie-break (przy 1:1)']].map(([field, label]) =>
+      `<label>${label}<input name="${field}" value="${esc(m[field] || '')}" placeholder="${field === 'st' ? '10:8' : '6:4'}" /></label>`
+    ).join('')}
+    <p id="form-error" class="error"></p>
+    <div class="actions"><button type="button" class="outline" id="cancel">Anuluj</button><button type="submit">Zapisz wynik</button></div>
+  </form></div>`;
 
   const form = document.querySelector('#result-form');
-  if (!form) return;
-
   const s1 = form.elements.namedItem('s1');
   const s2 = form.elements.namedItem('s2');
   const st = form.elements.namedItem('st');
+  const errorBox = document.querySelector('#form-error');
 
   const updateSuperTieBreak = () => {
     const a = parseSet(s1.value);
     const b = parseSet(s2.value);
-
-    const needed = a && b &&
-      a[0] !== a[1] &&
-      b[0] !== b[1] &&
-      (a[0] > a[1]) !== (b[0] > b[1]);
-
+    const needed = Boolean(a && b && a[0] !== a[1] && b[0] !== b[1] &&
+      (a[0] > a[1]) !== (b[0] > b[1]));
     st.disabled = !needed;
-    st.required = Boolean(needed);
-    st.placeholder = '10-8';
-
+    st.required = needed;
     if (!needed) st.value = '';
   };
 
   s1.addEventListener('input', updateSuperTieBreak);
   s2.addEventListener('input', updateSuperTieBreak);
-
   updateSuperTieBreak();
-};
+
+  document.querySelector('#cancel').onclick = () => { modal.innerHTML = ''; };
+  form.onsubmit = async e => {
+    e.preventDefault();
+    errorBox.textContent = '';
+    const data = Object.fromEntries(['s1', 's2', 'st'].map(k => {
+      const raw = String(form.elements.namedItem(k).value || '').trim();
+      const parsed = raw ? parseSet(raw) : null;
+      return [k, parsed ? `${parsed[0]}:${parsed[1]}` : (raw || null)];
+    }));
+
+    if (Object.values(data).some(v => v && !parseSet(v))) {
+      errorBox.textContent = 'Wpisz wyniki w formacie 6:4 lub 6-4.';
+      return;
+    }
+    if (Object.values(data).some(Boolean) && !result({ ...m, ...data })) {
+      errorBox.textContent = 'Podaj dwa rozstrzygnięte sety oraz super tie-break tylko przy wyniku 1:1. Aby usunąć wynik, wyczyść wszystkie pola.';
+      return;
+    }
+
+    const { error } = await db.from('matches').update(data).eq('id', m.id);
+    if (error) {
+      errorBox.textContent = error.message;
+      return;
+    }
+    modal.innerHTML = '';
+    notice = 'Wynik został zapisany.';
+    await load();
+  };
+}
+async function setup(){const {data:{session:s}}=await db.auth.getSession();session=s;db.auth.onAuthStateChange((event,newSession)=>{if(event==='PASSWORD_RECOVERY'){session=newSession;setTimeout(()=>showPasswordForm(),0);}else if(event==='SIGNED_IN'&&newSession&&!session){session=newSession;setTimeout(()=>load(),0);}else if(event==='SIGNED_OUT'){session=null;setTimeout(()=>render(),0);}});if(session)await load();else render();}
+function showPasswordForm(){app.innerHTML=`<main class="auth-wrap"><form class="auth-card" id="password-form"><h1>Ustaw hasło</h1><p>Ustaw hasło do konta Ligi Tenisowej.</p><label>Nowe hasło<input name="password" type="password" minlength="8" required autocomplete="new-password"></label><button type="submit">Zapisz hasło</button><p class="message" id="password-message"></p></form></main>`;document.querySelector('#password-form').onsubmit=async e=>{e.preventDefault();const password=new FormData(e.target).get('password');const {error}=await db.auth.updateUser({password});if(error){document.querySelector('#password-message').textContent=error.message;return;}history.replaceState({},'',location.pathname);notice='Hasło ustawione.';await load();};}
+setup();
