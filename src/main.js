@@ -25,3 +25,38 @@ function editMatch(id){const m=matches.find(x=>String(x.id)===String(id));if(!m)
 async function setup(){const {data:{session:s}}=await db.auth.getSession();session=s;db.auth.onAuthStateChange((event,newSession)=>{if(event==='PASSWORD_RECOVERY'){session=newSession;setTimeout(()=>showPasswordForm(),0);}else if(event==='SIGNED_IN'&&newSession&&!session){session=newSession;setTimeout(()=>load(),0);}else if(event==='SIGNED_OUT'){session=null;setTimeout(()=>render(),0);}});if(session)await load();else render();}
 function showPasswordForm(){app.innerHTML=`<main class="auth-wrap"><form class="auth-card" id="password-form"><h1>Ustaw hasło</h1><p>Ustaw hasło do konta Ligi Tenisowej.</p><label>Nowe hasło<input name="password" type="password" minlength="8" required autocomplete="new-password"></label><button type="submit">Zapisz hasło</button><p class="message" id="password-message"></p></form></main>`;document.querySelector('#password-form').onsubmit=async e=>{e.preventDefault();const password=new FormData(e.target).get('password');const {error}=await db.auth.updateUser({password});if(error){document.querySelector('#password-message').textContent=error.message;return;}history.replaceState({},'',location.pathname);notice='Hasło ustawione.';await load();};}
 setup();
+
+
+const originalEditMatch = editMatch;
+
+editMatch = function(id) {
+  originalEditMatch(id);
+
+  const form = document.querySelector('#result-form');
+  if (!form) return;
+
+  const s1 = form.elements.namedItem('s1');
+  const s2 = form.elements.namedItem('s2');
+  const st = form.elements.namedItem('st');
+
+  const updateSuperTieBreak = () => {
+    const a = parseSet(s1.value);
+    const b = parseSet(s2.value);
+
+    const needed = a && b &&
+      a[0] !== a[1] &&
+      b[0] !== b[1] &&
+      (a[0] > a[1]) !== (b[0] > b[1]);
+
+    st.disabled = !needed;
+    st.required = Boolean(needed);
+    st.placeholder = '10-8';
+
+    if (!needed) st.value = '';
+  };
+
+  s1.addEventListener('input', updateSuperTieBreak);
+  s2.addEventListener('input', updateSuperTieBreak);
+
+  updateSuperTieBreak();
+};
