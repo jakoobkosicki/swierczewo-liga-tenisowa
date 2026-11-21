@@ -62,3 +62,35 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
   .tabs button { font-size: 11px; }
   .pair { font-size: 13px; }
 }
+
+/* Na komputerze pokazuj pełne nazwiska */
+.name-full {
+  display: inline;
+}
+
+.name-short {
+  display: none;
+}
+
+/* Na telefonie pokazuj skrócone nazwiska */
+@media (max-width: 600px) {
+  .name-full {
+    display: none;
+  }
+
+  .name-short {
+    display: inline;
+    white-space: nowrap;
+  }
+
+  .scroll table {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .scroll th,
+  .scroll td {
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+}
