@@ -13,7 +13,22 @@ const parseSet=s=>{const m=String(s??'').trim().match(/^(\d+)\s*[-:]\s*(\d+)$/);
 function result(m){const a=parseSet(m.s1),b=parseSet(m.s2),t=parseSet(m.st);if(!a||!b||a[0]===a[1]||b[0]===b[1])return null;let wa=+(a[0]>a[1])+(b[0]>b[1]);let wb=2-wa;if(wa===2||wb===2){if(t)return null;return {winner:wa===2?m.player_a:m.player_b,points:wa===2?[3,0]:[0,3],sets:wa===2?[2,0]:[0,2]};}if(!t||t[0]===t[1])return null;const home=t[0]>t[1];return {winner:home?m.player_a:m.player_b,points:home?[2,1]:[1,2],sets:home?[2,1]:[1,2]};}
 function standings(){const rows=new Map(players.map(p=>[Number(p.id),{id:p.id,name:p.name,played:0,wins:0,losses:0,points:0,setsWon:0,setsLost:0}]));for(const m of matches){const r=result(m);if(!r)continue;const a=rows.get(Number(m.player_a)),b=rows.get(Number(m.player_b));if(!a||!b)continue;a.played++;b.played++;a.points+=r.points[0];b.points+=r.points[1];a.setsWon+=r.sets[0];a.setsLost+=r.sets[1];b.setsWon+=r.sets[1];b.setsLost+=r.sets[0];if(Number(r.winner)===Number(m.player_a)){a.wins++;b.losses++;}else{b.wins++;a.losses++;}}return [...rows.values()].sort((a,b)=>b.points-a.points||(b.setsWon-b.setsLost)-(a.setsWon-a.setsLost)||b.wins-a.wins||a.name.localeCompare(b.name,'pl'));}
 function header(){return `<header class="top"><div class="shell bar"><div class="brand">🎾 <span>Liga Tenisowa <small>Kobiet</small></span></div><div class="right"><span class="email">${esc(session?.user?.email||'')}</span>${session ? '<button class="outline" id="logout">Wyloguj</button>' : '<button class="outline" id="admin-login">Panel administratora</button>'}</div></div></header>`;}
-function render(){if(!session&&showAdminLogin){app.innerHTML=`<main class="auth-wrap"><div class="auth-card"><div class="logo">🎾</div><h1>Liga Tenisowa Kobiet</h1><p>Prywatna liga — zaloguj się, aby zobaczyć mecze i tabelę.</p><form id="auth-form"><label>Adres e-mail<input type="email" name="email" required autocomplete="email" placeholder="twoj@email.pl"></label>${authMode==='login'?'<label>Hasło<input type="password" name="password" required autocomplete="current-password"></label>':''}<button type="submit">${authMode==='login'?'Zaloguj się':'Wyślij link do ustawienia hasła'}</button></form><button class="text-button" id="mode">${authMode==='login'?'Nie pamiętasz hasła?':'Wróć do logowania'}</button><p class="message">${esc(notice)}</p></div></main>`;document.querySelector('#auth-form').onsubmit=authenticate;document.querySelector('#mode').onclick=()=>{authMode=authMode==='login'?'reset':'login';notice='';render();};return;}
+function roundDates(number) {
+  const start = new Date(Date.UTC(2026, 9, 5));
+  start.setUTCDate(start.getUTCDate() + (number - 1) * 21);
+
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 34);
+
+  const format = date => date.toLocaleDateString('pl-PL', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'UTC'
+  });
+
+  return `${format(start)} – ${format(end)}`;
+}function render(){if(!session&&showAdminLogin){app.innerHTML=`<main class="auth-wrap"><div class="auth-card"><div class="logo">🎾</div><h1>Liga Tenisowa Kobiet</h1><p>Prywatna liga — zaloguj się, aby zobaczyć mecze i tabelę.</p><form id="auth-form"><label>Adres e-mail<input type="email" name="email" required autocomplete="email" placeholder="twoj@email.pl"></label>${authMode==='login'?'<label>Hasło<input type="password" name="password" required autocomplete="current-password"></label>':''}<button type="submit">${authMode==='login'?'Zaloguj się':'Wyślij link do ustawienia hasła'}</button></form><button class="text-button" id="mode">${authMode==='login'?'Nie pamiętasz hasła?':'Wróć do logowania'}</button><p class="message">${esc(notice)}</p></div></main>`;document.querySelector('#auth-form').onsubmit=authenticate;document.querySelector('#mode').onclick=()=>{authMode=authMode==='login'?'reset':'login';notice='';render();};return;}
 
 const standingsHtml=standings().map((p,i)=>{
   const parts=p.name.trim().split(/\s+/);
