@@ -94,3 +94,25 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
     font-size: 12px;
   }
 }
+
+/* Wyroznienie podium w tabeli ligowej */
+
+/* 1. miejsce - zloto */
+.scroll tbody tr:nth-child(1) {
+  background-color: #fff3c4;
+}
+
+/* 2. miejsce - srebro */
+.scroll tbody tr:nth-child(2) {
+  background-color: #edf0f5;
+}
+
+/* 3. miejsce - braz */
+.scroll tbody tr:nth-child(3) {
+  background-color: #f5e1d1;
+}
+
+/* Wyroznienie numerow miejsc */
+.scroll tbody tr:nth-child(-n+3) .rank {
+  font-weight: 800;
+}
