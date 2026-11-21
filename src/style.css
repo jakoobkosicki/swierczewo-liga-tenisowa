@@ -1,1 +1,64 @@
 :root{font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;color:#30304c;background:#f9f8ff;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;background:#8c72d9;color:white;padding:12px 18px;font-weight:650}button:hover{filter:brightness(.97)}.outline{background:white;color:#7760c5;border:1px solid #ddd4f8}.shell{max-width:1080px;margin:auto;padding:0 22px}.top{background:white;border-bottom:1px solid #eee8fa}.bar{display:flex;align-items:center;justify-content:space-between;padding-top:16px;padding-bottom:16px;gap:16px}.brand{font-size:25px;font-weight:800;color:#7d65c9}.brand small{color:#e48eae}.right{display:flex;align-items:center;gap:14px}.email{font-size:13px;color:#777}.hero{background:linear-gradient(115deg,#fce5f0,#e8e1ff 58%,#def3fc);border-radius:26px;margin:32px 0 24px;padding:38px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:2px;color:#9878d2}.hero h1{font-size:clamp(30px,5vw,49px);margin:10px 0}.hero p{color:#6b6585}.stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.stats span{background:#ffffffad;border-radius:13px;padding:12px 18px}.stats strong{font-size:22px;color:#7d65c9}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}.tabs button{background:#fff;color:#756c94;border:1px solid #ebe6f5}.tabs button.active{background:#8c72d9;color:white}.panel{background:white;border:1px solid #eee9f5;border-radius:20px;padding:24px;box-shadow:0 8px 25px #51428a0b}.panel h2{margin-top:0}.hint{color:#807c95;font-size:13px;line-height:1.6}.scroll{overflow:auto}table{width:100%;border-collapse:collapse;text-align:left;white-space:nowrap}th{font-size:12px;color:#837c9b;background:#f6f3ff}th,td{padding:15px;border-bottom:1px solid #f1edf7}td strong,.rank{color:#8c72d9}.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}.section-title label{display:flex;gap:8px;align-items:center}.section-title select{width:auto}.matches{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}.match{border:1px solid #eee9f5;border-radius:16px;padding:18px;background:linear-gradient(180deg,#fff,#fdfbff)}.match-head{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#8d879e}.finished{color:#4d9a7b}.pending{color:#c28a63}.pair{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:24px 0 15px;font-weight:650}.pair>span:not(.vs){flex:1}.pair>span:last-child{text-align:right}.pair small{display:block;font-weight:400;color:#999;font-size:10px}.vs{font-size:11px;color:#b3a3db}.winner{color:#8c72d9}.score{text-align:center;background:#f3edff;border-radius:10px;padding:10px;font-weight:700}.edit{width:100%;margin-top:12px;background:#eaa3bd;color:#552b45}footer{text-align:center;padding:34px;color:#a19ab2;font-size:13px}.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#fbe3ee,#e9e3ff,#e1f4ff)}.auth-card{width:min(100%,430px);background:white;border-radius:25px;padding:38px;box-shadow:0 15px 60px #58468a22}.auth-card h1{text-align:center}.auth-card>p{text-align:center;color:#79738b;line-height:1.6}.logo{text-align:center;font-size:50px}label{display:block;font-size:14px;font-weight:600;margin:16px 0 6px}input,select{display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #ded9ed;margin-top:7px;background:white;color:#34314b}.auth-card form>button{width:100%;margin-top:20px}.text-button{background:transparent;color:#866cc7;padding:12px 0}.message{color:#8066ba;line-height:1.5}.overlay{position:fixed;inset:0;background:#24203580;display:grid;place-items:center;padding:16px}.dialog{background:white;padding:26px;border-radius:20px;width:min(100%,450px)}.dialog p{line-height:1.5}.actions{display:flex;justify-content:flex-end;gap:12px;margin-top:18px}.error{color:#c73b62;font-size:13px}@media(max-width:600px){.email{display:none}.hero{padding:26px}.stats span{flex:1}.panel{padding:15px}.bar .brand{font-size:20px}}
+
+/* Ulepszenia mobilne — Liga Tenisowa Kobiet */
+html { -webkit-text-size-adjust: 100%; }
+button, input, select { touch-action: manipulation; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #bca7f4; outline-offset: 2px; }
+.scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: #cbbcf0 #f6f3ff; }
+.scroll table { min-width: 660px; }
+.scroll th:nth-child(1), .scroll td:nth-child(1) { position: sticky; left: 0; z-index: 2; min-width: 42px; background: #fff; }
+.scroll th:nth-child(2), .scroll td:nth-child(2) { position: sticky; left: 42px; z-index: 2; min-width: 185px; background: #fff; box-shadow: 7px 0 10px -10px #3d305d80; }
+.scroll th:nth-child(1), .scroll th:nth-child(2) { background: #f6f3ff; z-index: 3; }
+.scroll th:nth-child(6), .scroll td:nth-child(6) { color: #7d65c9; font-weight: 800; }
+.overlay { z-index: 100; overflow-y: auto; overscroll-behavior: contain; }
+.dialog { max-height: calc(100dvh - 32px); overflow-y: auto; }
+@media (max-width: 600px) {
+  .shell { padding-left: 14px; padding-right: 14px; }
+  .bar { padding-top: 12px; padding-bottom: 12px; gap: 8px; }
+  .bar .brand { font-size: 18px; line-height: 1.2; }
+  .right { gap: 6px; flex-shrink: 0; }
+  .right button { padding: 10px 12px; font-size: 12px; }
+  .hero { margin: 16px 0; padding: 22px 18px; border-radius: 20px; }
+  .hero h1 { font-size: clamp(27px, 8vw, 36px); line-height: 1.15; }
+  .hero p { font-size: 14px; line-height: 1.5; }
+  .stats { gap: 8px; margin-top: 18px; }
+  .stats span { flex: 1 1 calc(50% - 8px); min-width: 0; padding: 10px; font-size: 12px; text-align: center; }
+  .stats strong { display: block; font-size: 23px; }
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .tabs button { min-width: 0; padding: 12px 7px; font-size: 12px; line-height: 1.35; }
+  .panel { padding: 16px 12px; border-radius: 18px; }
+  .panel h2 { font-size: 22px; }
+  .hint { font-size: 12px; }
+  .scroll { margin-right: -12px; padding-right: 12px; padding-bottom: 8px; }
+  .scroll table { font-size: 13px; min-width: 630px; }
+  .scroll th, .scroll td { padding: 13px 10px; }
+  .scroll th:nth-child(1), .scroll td:nth-child(1) { min-width: 38px; width: 38px; }
+  .scroll th:nth-child(2), .scroll td:nth-child(2) { left: 38px; min-width: 170px; max-width: 170px; white-space: normal; line-height: 1.35; }
+  .section-title { align-items: center; }
+  .section-title h2 { margin-bottom: 0; }
+  .section-title label { margin: 0; font-size: 12px; }
+  .section-title select { min-height: 42px; }
+  .matches { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 18px; }
+  .match { min-width: 0; padding: 16px; }
+  .pair { gap: 7px; margin: 18px 0 14px; font-size: 14px; }
+  .pair > span:not(.vs) { min-width: 0; overflow-wrap: anywhere; }
+  .vs { flex: 0 0 auto; }
+  .score { font-size: 15px; padding: 12px 8px; }
+  .edit { min-height: 48px; }
+  .auth-wrap { padding: 14px; }
+  .auth-card { padding: 26px 20px; }
+  input, select { min-height: 46px; font-size: 16px; }
+  .overlay { padding: 10px; align-items: center; }
+  .dialog { width: 100%; max-height: calc(100dvh - 20px); padding: 20px 16px; border-radius: 18px; }
+  .dialog h2 { margin-top: 0; font-size: 24px; }
+  .dialog label { margin-top: 12px; }
+  .actions { gap: 8px; }
+  .actions button { flex: 1; min-width: 0; min-height: 48px; padding: 10px 8px; font-size: 14px; }
+  footer { padding: 24px 8px; font-size: 11px; }
+}
+@media (max-width: 360px) {
+  .bar .brand { font-size: 16px; }
+  .right button { font-size: 11px; padding: 9px; }
+  .tabs button { font-size: 11px; }
+  .pair { font-size: 13px; }
+}
