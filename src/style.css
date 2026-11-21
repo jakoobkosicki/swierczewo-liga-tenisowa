@@ -406,3 +406,24 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 .profile-match-meta { color: #807c95; font-size: 12px; margin-top: 4px; }
 .profile-match-score { color: #7d65c9; font-weight: 700; margin-top: 6px; }
 @media (max-width: 600px) { .profile-dialog { padding: 18px 12px; } .profile-stats strong { font-size: 19px; } .profile-heading h2 { font-size: 19px; } .player-link { font-size: inherit; } }
+/* Kolory wyników w profilach zawodniczek */
+
+.profile-match.profile-win {
+  background-color: #effaf3;
+  border: 1px solid #b9e6c8;
+  border-left: 4px solid #35a66a;
+}
+
+.profile-match.profile-win .profile-match-score {
+  color: #218653;
+}
+
+.profile-match.profile-loss {
+  background-color: #fff2f3;
+  border: 1px solid #f2c4cb;
+  border-left: 4px solid #df7182;
+}
+
+.profile-match.profile-loss .profile-match-score {
+  color: #c45165;
+}
