@@ -93,7 +93,7 @@ document.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editMatc
 document.querySelectorAll('[data-player]').forEach(b => b.onclick = () => showPlayerProfile(b.dataset.player));
 }
 async function authenticate(e){e.preventDefault();const fd=new FormData(e.target),email=String(fd.get('email')).trim(),password=String(fd.get('password')||'');const res=authMode==='login'?await db.auth.signInWithPassword({email,password}):await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin});notice=res.error?res.error.message:(authMode==='reset'?'Sprawdź pocztę i otwórz link do ustawienia hasła.':'Zalogowano.');if(!res.error&&authMode==='login')await load();else render();}
-async function load(){const s=await db.auth.getSession();session=s.data.session;loading=true;const [p,m,a]=await Promise.all([db.from('players').select('id,name').order('id'),db.from('matches').select('id,round,player_a,player_b,s1,s2,st'),db.rpc('is_league_admin')]);players=p.data||[];matches=m.data||[];admin=!a.error&&a.data===true;notice=p.error||m.error?`Nie udało się pobrać danych: ${p.error?.message||m.error?.message}`:'';loading=false;render();}
+async function load(){const s=await db.auth.getSession();session=s.data.session;loading=true;const [p,m,a]=await Promise.all([db.from('players').select('id,name').order('id'),db.from('matches')..select('id,round,player_a,player_b,s1,s2,st,walkover,walkover_winner'),db.rpc('is_league_admin')]);players=p.data||[];matches=m.data||[];admin=!a.error&&a.data===true;notice=p.error||m.error?`Nie udało się pobrać danych: ${p.error?.message||m.error?.message}`:'';loading=false;render();}
 function showPlayerProfile(id) {
   const player = standings().find(p => Number(p.id) === Number(id));
   if (!player) return;
