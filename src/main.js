@@ -56,11 +56,13 @@ const matchesHtml=matches.filter(m=>Number(m.round)===round).sort((a,b)=>String(
 app.innerHTML=`${header()}<main class="shell"><section class="hero"><span class="eyebrow">SEZON LIGOWY</span><h1>Razem na korcie 💗</h1><p>Terminarz, wyniki i klasyfikacja naszej ligi tenisowej.</p><div class="stats"><span><strong>${players.length}</strong> zawodniczek</span><span><strong>${matches.length}</strong> meczów</span><span><strong>${matches.filter(result).length}</strong> zakończonych</span></div></section><div class="tabs"><button class="${tab==='table'?'active':''}" data-tab="table">🏆 Tabela ligowa</button><button class="${tab==='matches'?'active':''}" data-tab="matches">📅 Terminarz i wyniki</button></div>${notice?`<p class="message">${esc(notice)}</p>`:''}${tab==='table'?`<section class="panel"><h2>Klasyfikacja</h2>
 <div class="points-info">
   <strong>Zasady punktacji</strong>
-  <div class="points-grid">
-    <div>Wygrana 2:0<br><strong>3 pkt</strong></div>
-    <div>Wygrana 2:1<br><strong>2 pkt</strong></div>
-    <div>Przegrana 1:2<br><strong>1 pkt</strong></div>
-  </div>
+ <div class="points-grid">
+  <div>Wygrana 2:0<br><strong>3 pkt</strong></div>
+  <div>Wygrana 2:1<br><strong>2 pkt</strong></div>
+  <div>Przegrana 1:2<br><strong>1 pkt</strong></div>
+  <div>Przegrana 0:2<br><strong>0 pkt</strong></div>
+  <div>Wygrana walkowerem 2:0<br><strong>3 pkt</strong></div>
+  <div>Przegrana walkowerem 0:2<br><strong>-1 pkt</strong></div>
 </div>
 <div class="scroll"><table><thead><tr><th>#</th><th>Zawodniczka</th><th>M</th><th>W</th><th>P</th><th>PKT</th><th>Sety</th></tr></thead><tbody>${standingsHtml}</tbody></table></div></section>`:`<section class="panel"><div class="section-title"><h2>Terminarz</h2><label>Kolejka <select id="round">${rounds.map(n=>`<option value="${n}" ${round===n?'selected':''}>${n}</option>`).join('')}</select></label></div><p class="round-dates">
   📅 Termin kolejki: <strong>${roundDates(round)}</strong>
