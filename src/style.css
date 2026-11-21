@@ -319,3 +319,26 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
     text-align: left;
   }
 }
+
+/* Terminy kolejek ligowych */
+.round-dates {
+  background: #f3edff;
+  color: #6f56b3;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin: 16px 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+.round-dates strong {
+  color: #49318c;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .round-dates {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+}
