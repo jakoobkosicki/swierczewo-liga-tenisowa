@@ -126,10 +126,10 @@ function showPlayerProfile(id) {
         <div><strong>${player.losses}</strong><span>Przegrane</span></div>
         <div><strong>${player.points}</strong><span>Punkty</span></div>
       </div>
-      <h3>Do rozegrania (${upcoming.length})</h3>
-      ${upcoming.length ? upcoming.map(gameHtml).join('') : '<p class="hint">Brak oczekujących meczów.</p>'}
-      <h3>Rozegrane (${played.length})</h3>
-      ${played.length ? played.map(gameHtml).join('') : '<p class="hint">Brak rozegranych meczów.</p>'}
+<h3>Rozegrane (${played.length})</h3>
+${played.length ? played.map(gameHtml).join('') : '<p class="hint">Brak rozegranych meczów.</p>'}
+<h3>Do rozegrania (${upcoming.length})</h3>
+${upcoming.length ? upcoming.map(gameHtml).join('') : '<p class="hint">Brak oczekujących meczów.</p>'}
     </section>
   </div>`;
   document.querySelector('#close-profile').onclick = () => { modal.innerHTML = ''; };
