@@ -707,7 +707,7 @@ async function load() {
 
     db.from('matches')
       .select(
-        'id,round,player_a,player_b,s1,s2,st,walkover,walkover_winner'
+      'id,round,player_a,player_b,s1,s2,st'
       ),
 
     session
