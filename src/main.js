@@ -109,7 +109,7 @@ function showPlayerProfile(id) {
     const status = outcome
       ? (Number(outcome.winner) === Number(id) ? 'Wygrana' : 'Przegrana')
       : 'Do rozegrania';
-    return `<div class="profile-match">
+    return `<div class="profile-match ${outcome ? (Number(outcome.winner) === Number(id) ? 'profile-win' : 'profile-loss') : ''}">
       <div><strong>Kolejka ${esc(m.round)}</strong> · ${esc(opponent)}</div>
       <div class="profile-match-meta">${isHome ? 'Gospodyni' : 'Gościni'} · ${esc(roundDates(Number(m.round)))} · ${status}</div>
       <div class="profile-match-score">${esc(scoreText(m))}</div>
