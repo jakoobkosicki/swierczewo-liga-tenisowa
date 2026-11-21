@@ -8,7 +8,16 @@ const db=createClient(url,key,{auth:{detectSessionInUrl:true,persistSession:true
 let session=null,players=[],matches=[],admin=false,tab='table',round=1,notice='',authMode='login',loading=false,showAdminLogin=false;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const byId=id=>players.find(p=>Number(p.id)===Number(id))?.name??`Zawodniczka ${id}`;
-const scoreText=m=>[m.s1,m.s2,m.st].filter(v=>v!==null&&v!==undefined&&String(v).trim()!=='').join(' · ')||'Do rozegrania';
+const scoreText = m => {
+  if (m.walkover === true) {
+    const homeWins = Number(m.walkover_winner) === Number(m.player_a);
+    return homeWins ? 'Walkower 2:0' : 'Walkower 0:2';
+  }
+
+  return [m.s1, m.s2, m.st]
+    .filter(v => v !== null && v !== undefined && String(v).trim() !== '')
+    .join(' · ') || 'Do rozegrania';
+};[m.s1,m.s2,m.st].filter(v=>v!==null&&v!==undefined&&String(v).trim()!=='').join(' · ')||'Do rozegrania';
 const parseSet=s=>{const m=String(s??'').trim().match(/^(\d+)\s*[-:]\s*(\d+)$/);return m?[+m[1],+m[2]]:null;};
 function result(m){if (m.walkover === true) {
   const winner = Number(m.walkover_winner);
