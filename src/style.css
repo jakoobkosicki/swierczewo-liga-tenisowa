@@ -216,3 +216,83 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
   }
 }
 }
+
+/* Ostateczne dopasowanie tabeli do telefonu */
+@media (max-width: 600px) {
+  .panel {
+    min-width: 0;
+    padding: 10px 6px;
+  }
+
+  .scroll {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .scroll table {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+
+  .scroll th,
+  .scroll td {
+    box-sizing: border-box;
+    min-width: 0 !important;
+    max-width: none;
+    padding: 8px 1px;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
+  .scroll th:nth-child(1),
+  .scroll td:nth-child(1) {
+    width: 6%;
+  }
+
+  .scroll th:nth-child(2),
+  .scroll td:nth-child(2) {
+    width: 34%;
+  }
+
+  .scroll th:nth-child(3),
+  .scroll td:nth-child(3),
+  .scroll th:nth-child(4),
+  .scroll td:nth-child(4),
+  .scroll th:nth-child(5),
+  .scroll td:nth-child(5) {
+    width: 8%;
+  }
+
+  .scroll th:nth-child(6),
+  .scroll td:nth-child(6) {
+    width: 13%;
+  }
+
+  .scroll th:nth-child(7),
+  .scroll td:nth-child(7) {
+    width: 23%;
+  }
+
+  .scroll td:nth-child(2),
+  .scroll th:nth-child(2) {
+    position: static;
+    white-space: nowrap;
+  }
+
+  .scroll td:nth-child(1),
+  .scroll th:nth-child(1) {
+    position: static;
+  }
+
+  .name-short {
+    display: inline;
+    font-size: 10px;
+  }
+}
