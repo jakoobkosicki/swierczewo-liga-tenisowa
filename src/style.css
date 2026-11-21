@@ -342,3 +342,53 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
     font-size: 12px;
   }
 }
+
+/* Czytelne zasady punktacji */
+.points-info {
+  margin: 18px 0 22px;
+}
+
+.points-info > strong {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #6f56b3;
+}
+
+.points-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.points-grid > div {
+  background: #f6f3ff;
+  border: 1px solid #eae3fa;
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  font-size: 13px;
+  color: #71698b;
+}
+
+.points-grid > div strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 20px;
+  color: #7d65c9;
+}
+
+@media (max-width: 600px) {
+  .points-grid {
+    gap: 6px;
+  }
+
+  .points-grid > div {
+    padding: 10px 4px;
+    font-size: 11px;
+  }
+
+  .points-grid > div strong {
+    font-size: 17px;
+  }
+}
