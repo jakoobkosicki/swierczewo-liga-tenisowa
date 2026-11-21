@@ -170,6 +170,22 @@ function editMatch(id) {
   const modal = document.querySelector('#modal');
   modal.innerHTML = `<div class="overlay"><form class="dialog" id="result-form">
     <h2>Wynik meczu</h2>
+    <label>Rodzaj wyniku
+  <select name="result_type" id="result-type">
+    <option value="normal" ${!m.walkover ? 'selected' : ''}>Zwykły wynik</option>
+    <option value="walkover" ${m.walkover ? 'selected' : ''}>Walkower</option>
+  </select>
+</label>
+
+<div id="walkover-fields" style="display:${m.walkover ? 'block' : 'none'}">
+  <label>Zwyciężczyni walkowera
+    <select name="walkover_winner">
+      <option value="">Wybierz zawodniczkę</option>
+      <option value="${esc(m.player_a)}" ${Number(m.walkover_winner) === Number(m.player_a) ? 'selected' : ''}>${esc(byId(m.player_a))}</option>
+      <option value="${esc(m.player_b)}" ${Number(m.walkover_winner) === Number(m.player_b) ? 'selected' : ''}>${esc(byId(m.player_b))}</option>
+    </select>
+  </label>
+</div>
     <p>${esc(byId(m.player_a))} — ${esc(byId(m.player_b))}</p>
     <p class="hint">Zapisuj wynik z perspektywy gospodyni, np. 6:4. Przy remisie 1:1 podaj super tie-break, np. 10:8. Możesz również użyć myślnika.</p>
     ${[['s1', 'Set 1'], ['s2', 'Set 2'], ['st', 'Super tie-break (przy 1:1)']].map(([field, label]) =>
