@@ -215,8 +215,6 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
     padding-right: 1px;
   }
 }
-}
-
 /* Ostateczne dopasowanie tabeli do telefonu */
 @media (max-width: 600px) {
   .panel {
