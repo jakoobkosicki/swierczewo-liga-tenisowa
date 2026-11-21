@@ -128,7 +128,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 
 .scroll tbody tr:nth-child(3) td {
   background-color: #f5e1d1;
-
+}
 /* Tabela ligowa dopasowana do ekranu telefonu */
 @media (max-width: 600px) {
   .scroll {
