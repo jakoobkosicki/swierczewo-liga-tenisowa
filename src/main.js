@@ -24,8 +24,10 @@ const standingsHtml=standings().map((p,i)=>{
   return `<tr>
     <td class="rank">${i+1}</td>
     <td>
-      <span class="name-full">${esc(p.name)}</span>
-      <span class="name-short">${esc(shortName)}</span>
+      <button type="button" class="player-link" data-player="${esc(p.id)}" aria-label="Profil: ${esc(p.name)}">
+        <span class="name-full">${esc(p.name)}</span>
+        <span class="name-short">${esc(shortName)}</span>
+      </button>
     </td>
     <td>${p.played}</td>
     <td>${p.wins}</td>
@@ -89,9 +91,56 @@ document.querySelector('#round')?.addEventListener('change', e => {
 });
 
 document.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editMatch(b.dataset.edit));
+document.querySelectorAll('[data-player]').forEach(b => b.onclick = () => showPlayerProfile(b.dataset.player));
 }
 async function authenticate(e){e.preventDefault();const fd=new FormData(e.target),email=String(fd.get('email')).trim(),password=String(fd.get('password')||'');const res=authMode==='login'?await db.auth.signInWithPassword({email,password}):await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin});notice=res.error?res.error.message:(authMode==='reset'?'Sprawdź pocztę i otwórz link do ustawienia hasła.':'Zalogowano.');if(!res.error&&authMode==='login')await load();else render();}
 async function load(){const s=await db.auth.getSession();session=s.data.session;loading=true;const [p,m,a]=await Promise.all([db.from('players').select('id,name').order('id'),db.from('matches').select('id,round,player_a,player_b,s1,s2,st'),db.rpc('is_league_admin')]);players=p.data||[];matches=m.data||[];admin=!a.error&&a.data===true;notice=p.error||m.error?`Nie udało się pobrać danych: ${p.error?.message||m.error?.message}`:'';loading=false;render();}
+function showPlayerProfile(id) {
+  const player = standings().find(p => Number(p.id) === Number(id));
+  if (!player) return;
+
+  const games = matches
+    .filter(m => Number(m.player_a) === Number(id) || Number(m.player_b) === Number(id))
+    .sort((a, b) => Number(a.round) - Number(b.round));
+  const played = games.filter(m => result(m));
+  const upcoming = games.filter(m => !result(m));
+
+  const gameHtml = m => {
+    const isHome = Number(m.player_a) === Number(id);
+    const opponent = byId(isHome ? m.player_b : m.player_a);
+    const outcome = result(m);
+    const status = outcome
+      ? (Number(outcome.winner) === Number(id) ? 'Wygrana' : 'Przegrana')
+      : 'Do rozegrania';
+    return `<div class="profile-match">
+      <div><strong>Kolejka ${esc(m.round)}</strong> · ${esc(opponent)}</div>
+      <div class="profile-match-meta">${isHome ? 'Gospodyni' : 'Gościni'} · ${esc(roundDates(Number(m.round)))} · ${status}</div>
+      <div class="profile-match-score">${esc(scoreText(m))}</div>
+    </div>`;
+  };
+
+  const modal = document.querySelector('#modal');
+  modal.innerHTML = `<div class="overlay" id="profile-overlay">
+    <section class="dialog profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+      <div class="profile-heading"><h2 id="profile-title">${esc(player.name)}</h2><button type="button" class="outline" id="close-profile">Zamknij</button></div>
+      <div class="profile-stats">
+        <div><strong>${player.played}</strong><span>Mecze</span></div>
+        <div><strong>${player.wins}</strong><span>Wygrane</span></div>
+        <div><strong>${player.losses}</strong><span>Przegrane</span></div>
+        <div><strong>${player.points}</strong><span>Punkty</span></div>
+      </div>
+      <h3>Do rozegrania (${upcoming.length})</h3>
+      ${upcoming.length ? upcoming.map(gameHtml).join('') : '<p class="hint">Brak oczekujących meczów.</p>'}
+      <h3>Rozegrane (${played.length})</h3>
+      ${played.length ? played.map(gameHtml).join('') : '<p class="hint">Brak rozegranych meczów.</p>'}
+    </section>
+  </div>`;
+  document.querySelector('#close-profile').onclick = () => { modal.innerHTML = ''; };
+  document.querySelector('#profile-overlay').onclick = e => {
+    if (e.target.id === 'profile-overlay') modal.innerHTML = '';
+  };
+}
+
 function editMatch(id) {
   const m = matches.find(x => String(x.id) === String(id));
   if (!m) return;
@@ -160,3 +209,4 @@ function editMatch(id) {
 async function setup(){const {data:{session:s}}=await db.auth.getSession();session=s;db.auth.onAuthStateChange((event,newSession)=>{if(event==='PASSWORD_RECOVERY'){session=newSession;setTimeout(()=>showPasswordForm(),0);}else if(event==='SIGNED_IN'&&newSession&&!session){session=newSession;setTimeout(()=>load(),0);}else if(event==='SIGNED_OUT'){session=null;setTimeout(()=>render(),0);}});await load();}
 function showPasswordForm(){app.innerHTML=`<main class="auth-wrap"><form class="auth-card" id="password-form"><h1>Ustaw hasło</h1><p>Ustaw hasło do konta Ligi Tenisowej.</p><label>Nowe hasło<input name="password" type="password" minlength="8" required autocomplete="new-password"></label><button type="submit">Zapisz hasło</button><p class="message" id="password-message"></p></form></main>`;document.querySelector('#password-form').onsubmit=async e=>{e.preventDefault();const password=new FormData(e.target).get('password');const {error}=await db.auth.updateUser({password});if(error){document.querySelector('#password-message').textContent=error.message;return;}history.replaceState({},'',location.pathname);notice='Hasło ustawione.';await load();};}
 setup();
+```
