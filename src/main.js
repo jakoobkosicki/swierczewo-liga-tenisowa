@@ -34,9 +34,30 @@ const standingsHtml=standings().map((p,i)=>{
     <td>${p.setsWon}:${p.setsLost}</td>
   </tr>`;
 }).join('');
+
+function roundDates(number) {
+  const start = new Date(Date.UTC(2026, 9, 5));
+  start.setUTCDate(start.getUTCDate() + (number - 1) * 21);
+
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 34);
+
+  const format = date =>
+    date.toLocaleDateString('pl-PL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      timeZone: 'UTC'
+    });
+
+  return `${format(start)} – ${format(end)}`;
+}
 const rounds=[...new Set(matches.map(m=>Number(m.round)))].sort((a,b)=>a-b);
 const matchesHtml=matches.filter(m=>Number(m.round)===round).sort((a,b)=>String(a.id).localeCompare(String(b.id),undefined,{numeric:true})).map(m=>{const r=result(m);return `<article class="match"><div class="match-head"><span>Spotkanie ${esc(m.id)}</span><span class="${r?'finished':'pending'}">${r?'Zakończony':'Do rozegrania'}</span></div><div class="pair"><span class="${r&&Number(r.winner)===Number(m.player_a)?'winner':''}">${esc(byId(m.player_a))} <small>gospodyni</small></span><span class="vs">VS</span><span class="${r&&Number(r.winner)===Number(m.player_b)?'winner':''}">${esc(byId(m.player_b))}</span></div><div class="score">${esc(scoreText(m))}</div>${admin?`<button class="edit" data-edit="${esc(m.id)}">Wpisz / popraw wynik</button>`:''}</article>`;}).join('')||'<p>Brak meczów w tej kolejce.</p>';
-app.innerHTML=`${header()}<main class="shell"><section class="hero"><span class="eyebrow">SEZON LIGOWY</span><h1>Razem na korcie 💗</h1><p>Terminarz, wyniki i klasyfikacja naszej ligi tenisowej.</p><div class="stats"><span><strong>${players.length}</strong> zawodniczek</span><span><strong>${matches.length}</strong> meczów</span><span><strong>${matches.filter(result).length}</strong> zakończonych</span></div></section><div class="tabs"><button class="${tab==='table'?'active':''}" data-tab="table">🏆 Tabela ligowa</button><button class="${tab==='matches'?'active':''}" data-tab="matches">📅 Terminarz i wyniki</button></div>${notice?`<p class="message">${esc(notice)}</p>`:''}${tab==='table'?`<section class="panel"><h2>Klasyfikacja</h2><p class="hint">Punkty: 3 za wygraną 2:0, 2 za wygraną 2:1, 1 za przegraną 1:2.</p><div class="scroll"><table><thead><tr><th>#</th><th>Zawodniczka</th><th>M</th><th>W</th><th>P</th><th>PKT</th><th>Sety</th></tr></thead><tbody>${standingsHtml}</tbody></table></div></section>`:`<section class="panel"><div class="section-title"><h2>Terminarz</h2><label>Kolejka <select id="round">${rounds.map(n=>`<option value="${n}" ${round===n?'selected':''}>${n}</option>`).join('')}</select></label></div><div class="matches">${matchesHtml}</div></section>`}<footer>🎾 Liga Tenisowa Kobiet · Dostęp tylko dla zaproszonych osób</footer></main><div id="modal"></div>`;
+app.innerHTML=`${header()}<main class="shell"><section class="hero"><span class="eyebrow">SEZON LIGOWY</span><h1>Razem na korcie 💗</h1><p>Terminarz, wyniki i klasyfikacja naszej ligi tenisowej.</p><div class="stats"><span><strong>${players.length}</strong> zawodniczek</span><span><strong>${matches.length}</strong> meczów</span><span><strong>${matches.filter(result).length}</strong> zakończonych</span></div></section><div class="tabs"><button class="${tab==='table'?'active':''}" data-tab="table">🏆 Tabela ligowa</button><button class="${tab==='matches'?'active':''}" data-tab="matches">📅 Terminarz i wyniki</button></div>${notice?`<p class="message">${esc(notice)}</p>`:''}${tab==='table'?`<section class="panel"><h2>Klasyfikacja</h2><p class="hint">Punkty: 3 za wygraną 2:0, 2 za wygraną 2:1, 1 za przegraną 1:2.</p><div class="scroll"><table><thead><tr><th>#</th><th>Zawodniczka</th><th>M</th><th>W</th><th>P</th><th>PKT</th><th>Sety</th></tr></thead><tbody>${standingsHtml}</tbody></table></div></section>`:`<section class="panel"><div class="section-title"><h2>Terminarz</h2><label>Kolejka <select id="round">${rounds.map(n=>`<option value="${n}" ${round===n?'selected':''}>${n}</option>`).join('')}</select></label></div><p class="round-dates">
+  📅 Termin kolejki: <strong>${roundDates(round)}</strong>
+</p>
+<div class="matches">${matchesHtml}</div></section>`}<footer>🎾 Liga Tenisowa Kobiet · Dostęp tylko dla zaproszonych osób</footer></main><div id="modal"></div>`;
 document.querySelector('#admin-login')?.addEventListener('click',()=>{showAdminLogin=true;render();});
 
 document.querySelector('#logout')?.addEventListener('click', async () => {
