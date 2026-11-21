@@ -10,7 +10,21 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const byId=id=>players.find(p=>Number(p.id)===Number(id))?.name??`Zawodniczka ${id}`;
 const scoreText=m=>[m.s1,m.s2,m.st].filter(v=>v!==null&&v!==undefined&&String(v).trim()!=='').join(' · ')||'Do rozegrania';
 const parseSet=s=>{const m=String(s??'').trim().match(/^(\d+)\s*[-:]\s*(\d+)$/);return m?[+m[1],+m[2]]:null;};
-function result(m){const a=parseSet(m.s1),b=parseSet(m.s2),t=parseSet(m.st);if(!a||!b||a[0]===a[1]||b[0]===b[1])return null;let wa=+(a[0]>a[1])+(b[0]>b[1]);let wb=2-wa;if(wa===2||wb===2){if(t)return null;return {winner:wa===2?m.player_a:m.player_b,points:wa===2?[3,0]:[0,3],sets:wa===2?[2,0]:[0,2]};}if(!t||t[0]===t[1])return null;const home=t[0]>t[1];return {winner:home?m.player_a:m.player_b,points:home?[2,1]:[1,2],sets:home?[2,1]:[1,2]};}
+function result(m){if (m.walkover === true) {
+  const winner = Number(m.walkover_winner);
+  const home = Number(m.player_a);
+  const away = Number(m.player_b);
+
+  if (winner !== home && winner !== away) return null;
+
+  const homeWins = winner === home;
+
+  return {
+    winner,
+    points: homeWins ? [3, -1] : [-1, 3],
+    sets: homeWins ? [2, 0] : [0, 2]
+  };
+}const a=parseSet(m.s1),b=parseSet(m.s2),t=parseSet(m.st);if(!a||!b||a[0]===a[1]||b[0]===b[1])return null;let wa=+(a[0]>a[1])+(b[0]>b[1]);let wb=2-wa;if(wa===2||wb===2){if(t)return null;return {winner:wa===2?m.player_a:m.player_b,points:wa===2?[3,0]:[0,3],sets:wa===2?[2,0]:[0,2]};}if(!t||t[0]===t[1])return null;const home=t[0]>t[1];return {winner:home?m.player_a:m.player_b,points:home?[2,1]:[1,2],sets:home?[2,1]:[1,2]};}
 function standings(){const rows=new Map(players.map(p=>[Number(p.id),{id:p.id,name:p.name,played:0,wins:0,losses:0,points:0,setsWon:0,setsLost:0}]));for(const m of matches){const r=result(m);if(!r)continue;const a=rows.get(Number(m.player_a)),b=rows.get(Number(m.player_b));if(!a||!b)continue;a.played++;b.played++;a.points+=r.points[0];b.points+=r.points[1];a.setsWon+=r.sets[0];a.setsLost+=r.sets[1];b.setsWon+=r.sets[1];b.setsLost+=r.sets[0];if(Number(r.winner)===Number(m.player_a)){a.wins++;b.losses++;}else{b.wins++;a.losses++;}}return [...rows.values()].sort((a,b)=>b.points-a.points||(b.setsWon-b.setsLost)-(a.setsWon-a.setsLost)||b.wins-a.wins||a.name.localeCompare(b.name,'pl'));}
 function header(){return `<header class="top"><div class="shell bar"><div class="brand">🎾 <span>Liga Tenisowa <small>Kobiet</small></span></div><div class="right"><span class="email">${esc(session?.user?.email||'')}</span>${session ? '<button class="outline" id="logout">Wyloguj</button>' : '<button class="outline" id="admin-login">Panel administratora</button>'}</div></div></header>`;}
 function roundDates(number) {
