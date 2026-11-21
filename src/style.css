@@ -116,3 +116,16 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 .scroll tbody tr:nth-child(-n+3) .rank {
   font-weight: 800;
 }
+
+/* Kolory podium na calej szerokosci wiersza */
+.scroll tbody tr:nth-child(1) td {
+  background-color: #fff3c4;
+}
+
+.scroll tbody tr:nth-child(2) td {
+  background-color: #edf0f5;
+}
+
+.scroll tbody tr:nth-child(3) td {
+  background-color: #f5e1d1;
+}
