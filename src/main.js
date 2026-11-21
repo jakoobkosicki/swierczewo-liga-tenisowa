@@ -200,7 +200,27 @@ function editMatch(id) {
   const s2 = form.elements.namedItem('s2');
   const st = form.elements.namedItem('st');
   const errorBox = document.querySelector('#form-error');
+const resultType = form.elements.namedItem('result_type');
+const walkoverFields = document.querySelector('#walkover-fields');
 
+const setInputs = [s1, s2, st];
+
+const updateResultType = () => {
+  const isWalkover = resultType.value === 'walkover';
+
+  walkoverFields.style.display = isWalkover ? 'block' : 'none';
+
+  setInputs.forEach(input => {
+    input.closest('label').style.display = isWalkover ? 'none' : '';
+    input.disabled = isWalkover;
+  });
+
+  if (!isWalkover) {
+    updateSuperTieBreak();
+  }
+};
+
+resultType.addEventListener('change', updateResultType);
   const updateSuperTieBreak = () => {
     const a = parseSet(s1.value);
     const b = parseSet(s2.value);
@@ -213,7 +233,7 @@ function editMatch(id) {
 
   s1.addEventListener('input', updateSuperTieBreak);
   s2.addEventListener('input', updateSuperTieBreak);
-  updateSuperTieBreak();
+  updateResultType();
 
   document.querySelector('#cancel').onclick = () => { modal.innerHTML = ''; };
   form.onsubmit = async e => {
