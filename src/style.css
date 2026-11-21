@@ -427,3 +427,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 .profile-match.profile-loss .profile-match-score {
   color: #c45165;
 }
+/* Odstęp między zasadami punktacji a tabelą */
+.points-grid {
+  margin-bottom: 24px;
+}
