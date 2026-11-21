@@ -128,4 +128,91 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 
 .scroll tbody tr:nth-child(3) td {
   background-color: #f5e1d1;
+
+/* Tabela ligowa dopasowana do ekranu telefonu */
+@media (max-width: 600px) {
+  .scroll {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    margin-right: 0;
+    padding-right: 0;
+  }
+
+  .scroll table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+    white-space: nowrap;
+    font-size: 11px;
+  }
+
+  .scroll th,
+  .scroll td {
+    padding: 9px 2px;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .scroll th:nth-child(1),
+  .scroll td:nth-child(1) {
+    position: static;
+    width: 7%;
+    min-width: 0;
+  }
+
+  .scroll th:nth-child(2),
+  .scroll td:nth-child(2) {
+    position: static;
+    width: 33%;
+    min-width: 0;
+    max-width: none;
+    text-align: left;
+    box-shadow: none;
+    overflow: hidden;
+  }
+
+  .scroll th:nth-child(3),
+  .scroll td:nth-child(3),
+  .scroll th:nth-child(4),
+  .scroll td:nth-child(4),
+  .scroll th:nth-child(5),
+  .scroll td:nth-child(5) {
+    width: 9%;
+  }
+
+  .scroll th:nth-child(6),
+  .scroll td:nth-child(6) {
+    width: 12%;
+  }
+
+  .scroll th:nth-child(7),
+  .scroll td:nth-child(7) {
+    width: 21%;
+  }
+
+  .name-full {
+    display: none;
+  }
+
+  .name-short {
+    display: inline;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 360px) {
+  .scroll th,
+  .scroll td,
+  .name-short {
+    font-size: 10px;
+  }
+
+  .scroll th,
+  .scroll td {
+    padding-left: 1px;
+    padding-right: 1px;
+  }
+}
 }
