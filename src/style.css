@@ -5,9 +5,9 @@ html { -webkit-text-size-adjust: 100%; }
 button, input, select { touch-action: manipulation; }
 button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #bca7f4; outline-offset: 2px; }
 .scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: #cbbcf0 #f6f3ff; }
-.scroll table { min-width: 660px; }
-.scroll th:nth-child(1), .scroll td:nth-child(1) { position: sticky; left: 0; z-index: 2; min-width: 42px; background: #fff; }
-.scroll th:nth-child(2), .scroll td:nth-child(2) { position: sticky; left: 42px; z-index: 2; min-width: 185px; background: #fff; box-shadow: 7px 0 10px -10px #3d305d80; }
+.scroll table { width: 100%; min-width: 0; }
+.scroll th:nth-child(1), .scroll td:nth-child(1) { position: static; left: 0; z-index: 2; min-width: 42px; background: #fff; }
+.scroll th:nth-child(2), .scroll td:nth-child(2) { position: static; left: 42px; z-index: 2; min-width: 185px; background: #fff; box-shadow: 7px 0 10px -10px #3d305d80; }
 .scroll th:nth-child(1), .scroll th:nth-child(2) { background: #f6f3ff; z-index: 3; }
 .scroll th:nth-child(6), .scroll td:nth-child(6) { color: #7d65c9; font-weight: 800; }
 .overlay { z-index: 100; overflow-y: auto; overscroll-behavior: contain; }
@@ -30,10 +30,10 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
   .panel h2 { font-size: 22px; }
   .hint { font-size: 12px; }
   .scroll { margin-right: -12px; padding-right: 12px; padding-bottom: 8px; }
-  .scroll table { font-size: 13px; min-width: 630px; }
+  .scroll table { font-size: 13px; min-width: 0; }
   .scroll th, .scroll td { padding: 13px 10px; }
   .scroll th:nth-child(1), .scroll td:nth-child(1) { min-width: 38px; width: 38px; }
-  .scroll th:nth-child(2), .scroll td:nth-child(2) { left: 38px; min-width: 170px; max-width: 170px; white-space: normal; line-height: 1.35; }
+  .scroll th:nth-child(2), .scroll td:nth-child(2) { left: 38px; min-width: 0; max-width: none; white-space: normal; line-height: 1.35; }
   .section-title { align-items: center; }
   .section-title h2 { margin-bottom: 0; }
   .section-title label { margin: 0; font-size: 12px; }
@@ -294,5 +294,28 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
   .name-short {
     display: inline;
     font-size: 10px;
+  }
+}
+@media (max-width: 600px) {
+  .scroll {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .scroll table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .scroll th,
+  .scroll td {
+    text-align: center;
+  }
+
+  .scroll th:nth-child(2),
+  .scroll td:nth-child(2) {
+    text-align: left;
   }
 }
